@@ -178,5 +178,3 @@ def executar_produtos():
         else:
             print("Opção inválida! Escolha novamente.")
 
-if __name__ == "__main__":
-    executar_produtos()
