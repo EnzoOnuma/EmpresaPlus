@@ -75,7 +75,7 @@ def listar_produtos():
     for nome, preco in produtos:
         print(f"Nome: {nome} - Preço: R${preco}")
 
-def executar_produtos():
+def executar_produtos(): #executa todas as outras funcoes no código
     while True:
         menu()
         opcao = input("Escolha uma opção: ").strip()
