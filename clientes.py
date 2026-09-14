@@ -133,6 +133,34 @@ def cadastro_clientes():
         print(f"{'CADASTRAR CLIENTE':^30}")
         print(f"{'='*30}")
 
+        nome = validar_nome()
+        if nome == "":
+            print("Cadastro cancelado.")
+            return
+
+        email = validar_email()
+        if email == "":
+            print("Cadastro cancelado.")
+            return
+
+        telefone = validar_telefone()
+        if telefone == "":
+            print("Cadastro cancelado.")
+            return
+
+        try:
+            # O modo "a" cria o arquivo automaticamente, caso ele não exista
+            with open(arquivo, "a", encoding="utf-8") as arq:
+                arq.write(f"{nome};{email};{telefone}\n")
+        except PermissionError:
+            print("Não foi possível salvar. Feche o arquivo se ele estiver aberto em outro programa.")
+            return
+        except OSError as erro:
+            print(f"Não foi possível salvar o cliente: {erro}")
+            return
+
+        print(f'Cliente "{nome}" cadastrado com sucesso!')
+
     def listar_clientes():
         # Opção 2 do menu: lê o arquivo e mostra todos os clientes cadastrados
         print(f"\n{'='*30}")
