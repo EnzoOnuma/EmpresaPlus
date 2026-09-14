@@ -202,6 +202,71 @@ def cadastro_clientes():
         print(f"{'ALTERAR CLIENTE':^30}")
         print(f"{'='*30}")
 
+        if not os.path.exists(arquivo):
+            print("Nenhum cliente cadastrado.")
+            return
+
+        try:
+            with open(arquivo, "r", encoding="utf-8") as arq:
+                linhas = arq.readlines()
+        except PermissionError:
+            print("Não foi possível abrir o arquivo. Feche-o se estiver aberto em outro programa.")
+            return
+        except OSError as erro:
+            print(f"Não foi possível ler o arquivo: {erro}")
+            return
+
+        if len(linhas) == 0:
+            print("Nenhum cliente cadastrado.")
+            return
+
+        nome_busca = input("\nDigite o nome do cliente que deseja alterar: ").strip().lower()
+        if nome_busca == "":
+            print("Valor inválido! O nome não pode ficar vazio.")
+            return
+
+        indice_encontrado = -1
+        for i in range(len(linhas)):
+            if linhas[i].lower().startswith(nome_busca + ";"):
+                indice_encontrado = i
+                break  # Para na primeira ocorrência encontrada
+
+        if indice_encontrado == -1:
+            print("Cliente não encontrado.")
+            return
+
+        print(f"\nCliente encontrado: {linhas[indice_encontrado].strip()}")
+        print("Digite os novos dados abaixo:")
+
+        novo_nome = validar_nome()
+        if novo_nome == "":
+            print("Alteração cancelada.")
+            return
+
+        novo_email = validar_email()
+        if novo_email == "":
+            print("Alteração cancelada.")
+            return
+
+        novo_telefone = validar_telefone()
+        if novo_telefone == "":
+            print("Alteração cancelada.")
+            return
+
+        linhas[indice_encontrado] = f"{novo_nome};{novo_email};{novo_telefone}\n"
+
+        try:
+            with open(arquivo, "w", encoding="utf-8") as arq:
+                arq.writelines(linhas)
+        except PermissionError:
+            print("Não foi possível salvar. Feche o arquivo se ele estiver aberto em outro programa.")
+            return
+        except OSError as erro:
+            print(f"Não foi possível salvar as alterações: {erro}")
+            return
+
+        print("Cliente alterado com sucesso!")
+
     def excluir_cliente():
         # Opção 4 do menu: procura um cliente pelo nome e remove do arquivo
         print(f"\n{'='*30}")
