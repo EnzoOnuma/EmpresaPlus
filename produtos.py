@@ -1,6 +1,26 @@
 # Dupla: João Pedro Formiga Baptista e Matheus Henriques Geroldo
+import os
 
 ARQUIVO_PRODUTOS = "produtos.txt"
+
+def carregar_produtos():
+    produtos = []
+
+    if not os.path.exists(ARQUIVO_PRODUTOS):
+        return produtos
+
+    with open(ARQUIVO_PRODUTOS, "r", encoding="utf-8") as arquivo:
+        linhas_brutas = arquivo.readlines()
+
+    for linha_bruta in linhas_brutas:
+        linha = linha_bruta.strip()
+        try:
+            nome, preco = linha.split(";")
+            produtos.append((nome, float(preco)))
+        except ValueError:
+            print(f"Linha inválida ignorada: {linha}")
+
+    return produtos
 
 def cadastrar_produto():
     print("\n--- Cadastro de Produto ---")
