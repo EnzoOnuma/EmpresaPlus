@@ -65,7 +65,17 @@ def listar_produtos():
     for nome, preco in produtos:
         print(f"Nome: {nome} - Preço: R${preco}")
 
-if __name__ == "__main__":
-    cadastrar_produto()
-    carregar_produtos()
-    listar_produtos()
+def executar_produtos():
+    while True:
+        menu()
+        opcao = input("Escolha uma opção: ").strip()
+
+        if opcao == "1":
+            cadastrar_produto()
+        elif opcao == "2":
+            listar_produtos()
+        elif opcao == "0":
+            print("Saindo do módulo de produtos...")
+            break
+        else:
+            print("Opção inválida! Escolha novamente.")
