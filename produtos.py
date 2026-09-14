@@ -28,6 +28,13 @@ def carregar_produtos():
 
     return produtos
 
+def produto_existe(nome):
+    produtos = carregar_produtos()
+    for nome_cadastrado, preco in produtos:
+        if nome_cadastrado.lower() == nome.lower():
+            return True
+    return False
+
 def cadastrar_produto():
     print("\n--- Cadastro de Produto ---")
 
@@ -36,6 +43,9 @@ def cadastrar_produto():
         if nome == "":
             print("O nome não pode ficar em branco.")
             continue
+        if produto_existe(nome):
+            print("Produto já cadastrado!")
+            return
         break
 
     while True:
