@@ -165,7 +165,36 @@ def cadastro_clientes():
         # Opção 2 do menu: lê o arquivo e mostra todos os clientes cadastrados
         print(f"\n{'='*30}")
         print(f"{'LISTAR CLIENTES':^30}")
-        print(f"{'='*30}")    
+        print(f"{'='*30}")
+
+        if not os.path.exists(arquivo):
+            print("Nenhum cliente cadastrado.")
+            return
+
+        try:
+            with open(arquivo, "r", encoding="utf-8") as arq:
+                linhas = arq.readlines()
+        except PermissionError:
+            print("Não foi possível abrir o arquivo. Feche-o se estiver aberto em outro programa.")
+            return
+        except OSError as erro:
+            print(f"Não foi possível ler o arquivo: {erro}")
+            return
+
+        if len(linhas) == 0:
+            print("Nenhum cliente cadastrado.")
+            return
+
+        for linha in linhas:
+            dados = linha.strip().split(";")
+            if len(dados) == 3:
+                nome = dados[0]
+                email = dados[1]
+                telefone = dados[2]
+                print(f"Nome: {nome} | Email: {email} | Telefone: {telefone}")
+            else:
+                # Protege contra uma linha corrompida ou fora do formato esperado
+                print("Registro inválido encontrado no arquivo e foi ignorado.")    
 
     def alterar_cliente():
         # Opção 3 do menu: procura um cliente pelo nome e atualiza os dados
