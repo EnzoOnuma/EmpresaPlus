@@ -273,6 +273,62 @@ def cadastro_clientes():
         print(f"{'EXCLUIR CLIENTE':^30}")
         print(f"{'='*30}")
 
+        if not os.path.exists(arquivo):
+            print("Nenhum cliente cadastrado.")
+            return
+
+        try:
+            with open(arquivo, "r", encoding="utf-8") as arq:
+                linhas = arq.readlines()
+        except PermissionError:
+            print("Não foi possível abrir o arquivo. Feche-o se estiver aberto em outro programa.")
+            return
+        except OSError as erro:
+            print(f"Não foi possível ler o arquivo: {erro}")
+            return
+
+        if len(linhas) == 0:
+            print("Nenhum cliente cadastrado.")
+            return
+
+        nome_busca = input("\nDigite o nome do cliente que deseja excluir: ").strip().lower()
+        if nome_busca == "":
+            print("Valor inválido! O nome não pode ficar vazio.")
+            return
+
+        indice_encontrado = -1
+        for i in range(len(linhas)):
+            if linhas[i].lower().startswith(nome_busca + ";"):
+                indice_encontrado = i
+                break  # Para na primeira ocorrência encontrada
+
+        if indice_encontrado == -1:
+            print("Cliente não encontrado.")
+            return
+
+        print(f"\nCliente encontrado: {linhas[indice_encontrado].strip()}")
+        if not perguntar_sim_nao("Tem certeza que deseja excluir este cliente? (s/n) "):
+            print("Exclusão cancelada.")
+            return
+
+        # Monta uma nova lista mantendo todas as linhas, exceto a excluída
+        mantidos = []
+        for i in range(len(linhas)):
+            if i != indice_encontrado:
+                mantidos.append(linhas[i])
+
+        try:
+            with open(arquivo, "w", encoding="utf-8") as arq:
+                arq.writelines(mantidos)
+        except PermissionError:
+            print("Não foi possível salvar. Feche o arquivo se ele estiver aberto em outro programa.")
+            return
+        except OSError as erro:
+            print(f"Não foi possível salvar as alterações: {erro}")
+            return
+
+        print("Cliente excluído com sucesso!")
+
     # Menu principal: fica em execução até o usuário escolher voltar (0)
     while True:
         print(f"\n{'='*30}")
