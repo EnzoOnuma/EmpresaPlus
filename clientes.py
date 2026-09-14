@@ -6,6 +6,127 @@ import os  # Usado para verificar se o arquivo de clientes existe
 def cadastro_clientes():
     arquivo = "clientes.txt"  # Nome do arquivo onde os clientes ficam salvos
 
+    # Caracteres aceitos no nome (letras, acentos e espaço)
+    letras_nome = (
+        "abcdefghijklmnopqrstuvwxyz"
+        "áàâãéèêíïóôõöúçñ"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "ÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑ "
+    )
+
+    # Caracteres aceitos na extensão do domínio do email (ex: com, br, org)
+    letras_dominio = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+    def perguntar_sim_nao(pergunta):
+        # Faz uma pergunta de sim/não e só aceita 's' ou 'n' como resposta
+        while True:
+            resposta = input(pergunta).strip().lower()
+            if resposta == "s":
+                return True
+            elif resposta == "n":
+                return False
+            else:
+                print("Valor inválido! Digite apenas 's' para sim ou 'n' para não.")
+
+    def validar_nome():
+        # Solicita e valida o nome: só letras/espaços, entre 2 e 60 caracteres
+        while True:
+            nome = " ".join(input("\nDigite o nome do cliente: ").split()) 
+
+            nome_valido = True
+            for letra in nome:
+                if letra not in letras_nome:
+                    nome_valido = False
+
+            if nome == "":
+                print("Valor inválido! O nome não pode ficar vazio.")
+            elif not nome_valido:
+                print("Valor inválido! Use apenas letras e espaços.")
+            elif len(nome) < 2 or len(nome) > 60:
+                print("Valor inválido! O nome deve ter entre 2 e 60 caracteres.")
+            else:
+                return nome  # Nome válido
+
+            if not perguntar_sim_nao("Deseja tentar novamente? (s/n) "):
+                return ""  # Usuário desistiu
+
+    def validar_email():
+        # Solicita e valida o email, checando formato manualmente (sem regex)
+        while True:
+            email = input("\nDigite o email do cliente: ").strip()
+            email_valido = True
+
+            if email == "":
+                email_valido = False
+                print("Valor inválido! O email não pode ficar vazio.")
+            elif len(email) > 320:
+                email_valido = False
+                print("Valor inválido! O email deve ter no máximo 320 caracteres.")
+            else:
+                partes = email.split("@")  # Separa em usuário e domínio
+
+                if len(partes) != 2:
+                    email_valido = False
+                    print("Valor inválido! O email deve conter exatamente um '@'.")
+                else:
+                    usuario = partes[0]
+                    dominio = partes[1]
+
+                    if usuario == "" or dominio == "":
+                        email_valido = False
+                        print("Valor inválido! Preencha corretamente antes e depois do '@'.")
+                    elif "." not in dominio:
+                        email_valido = False
+                        print("Valor inválido! O domínio deve ter um ponto, como em 'dominio.com'.")
+                    elif dominio[0] == "." or dominio[len(dominio) - 1] == ".":
+                        email_valido = False
+                        print("Valor inválido! O domínio não pode começar ou terminar com ponto.")
+                    else:
+                        extensao = dominio.split(".")
+                        ultima_parte = extensao[len(extensao) - 1]
+
+                        extensao_valida = True
+                        for letra in ultima_parte:
+                            if letra not in letras_dominio:
+                                extensao_valida = False
+
+                        if len(ultima_parte) < 2 or not extensao_valida:
+                            email_valido = False
+                            print("Valor inválido! Digite um email no formato nome@dominio.com.")
+
+            if email_valido:
+                return email  # Email válido
+
+            if not perguntar_sim_nao("Deseja tentar novamente? (s/n) "):
+                return ""  # Usuário desistiu
+
+    def validar_telefone():
+        # Solicita e valida o telefone: só números, com 10 ou 11 dígitos (DDD + número)
+        while True:
+            telefone = input("\nDigite o telefone com DDD: ").strip()
+
+            # Remove formatação comum, tipo (11) 91234-5678
+            numeros = telefone.replace(" ", "")
+            numeros = numeros.replace("-", "")
+            numeros = numeros.replace("(", "")
+            numeros = numeros.replace(")", "")
+
+            if numeros == "":
+                print("Valor inválido! O telefone não pode ficar vazio.")
+            else:
+                try:
+                    int(numeros)  # Só serve para confirmar que são todos números
+                except ValueError:
+                    print("Valor inválido! Digite apenas números (pode incluir DDD).")
+                else:
+                    if len(numeros) == 10 or len(numeros) == 11:
+                        return numeros  # Telefone válido, já limpo
+                    else:
+                        print("Valor inválido! O telefone deve ter 10 ou 11 dígitos.")
+
+            if not perguntar_sim_nao("Deseja tentar novamente? (s/n) "):
+                return ""  # Usuário desistiu
+
     def cadastrar_cliente():
         # Opção 1 do menu: cadastra um novo cliente no arquivo
         print(f"\n{'='*30}")
