@@ -3,6 +3,12 @@ import os
 
 ARQUIVO_PRODUTOS = "produtos.txt"
 
+def menu():
+    print("\n===== MENU DE PRODUTOS =====")
+    print("1 - Cadastrar produto")
+    print("2 - Listar produtos")
+    print("0 - Voltar ao menu principal")
+
 def carregar_produtos():
     produtos = []
 
